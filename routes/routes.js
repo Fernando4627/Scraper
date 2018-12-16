@@ -1,68 +1,68 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const db = require("../models/Article");
-const scraper = require("../functions/scraper");
-
-router.get("/", (req, res) => {
+const db = require('../models/article');
+const scraper = require('../functions/scraper');
+router.get('/', (req, res) => {
     db.article.find((err, data) => {
-        if(err) {
-            res.render("home", {err: "An error occurred"});
+        if (err) {
+            res.render('home', { err: 'An error occurred' });
         }
-        res.render("home", {articles:data});
+        res.render('home', { articles: data });
     })
-});
-router.get("/scrape", (req, res) => {
+})
+router.get('/scrape', (req, res) => {
     db.article.collection.remove();
     scraper(articles => {
         let stop = 10;
-        if(articles.length < 10)
-        stop = articles.length;
+        if (articles.length < 10)
+            stop = articles.length;
 
         for (let i = 0; i < stop; i++) {
-            let doc = new db.article({
+            const doc = new db.article({
                 headline: articles[i].title,
                 summary: articles[i].summary,
-                link: article[i].href
+                link: articles[i].href
             })
             doc.save();
         }
-        res.json({msg: "success"});
+        res.json({ msg: 'success' });
     })
 })
-router.post("/save", (req, res) => {
+router.post('/save', (req, res) => {
     const id = req.body.id;
-    db.article.findOne({_id : id}, (err,doc) => {
-        if(err) throw err;
+    db.article.findOne({ _id: id }, (err, doc) => {
+        if (err) throw err;
         const saveDoc = new db.saved_article({
             headline: doc.headline,
-            sumary: doc.summary,
+            summary: doc.summary,
             link: doc.link
         });
         saveDoc.save();
-        res.json({msg: "success"});
+        res.json({ msg: 'success' });
     })
 })
-router.delete("/deleteSavedArticle", (req, res) => {
+router.delete('/deleteSavedArticle', (req, res) => {
     let id = req.body.id;
-    console.log("ID: ", id);
-    db.saved_article.deleteOne({_id: id}, err => {
-        if(err){
-            res.json({msg: err});
+    console.log('ID: ', id);
+    db.saved_article.deleteOne({ _id: id }, err => {
+        if (err) {
+            res.json({ msg: err });
         }
-        res.json({msg: "Success"});
+
+        res.json({ msg: 'success' });
     })
 })
-router.get("/savedArticles", (req, res) => {
+router.get('/savedArticles', (req, res) => {
     db.saved_article.find((err, data) => {
-        if(err){
-            res.render("savedArticles", {err});
+        if (err) {
+            res.render('savedArticles', { err });
         }
         console.log(data);
-        res.render("savedArticles", {articles: data});
+        res.render('savedArticles', { articles: data });
     })
 })
-router.delete("/clearArticles", (req, res) => {
+router.delete('/clearArticles', (req, res) => {
     db.article.collection.remove();
-    res.json({msg: "success"})
+    res.json({ msg: 'success' });
 })
 module.exports = router;
