@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../models/article');
+const db = require('../models/Article');
 const scraper = require('../functions/scraper');
 router.get('/', (req, res) => {
     db.article.find((err, data) => {
