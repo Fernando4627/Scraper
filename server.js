@@ -7,7 +7,7 @@ const mongoose = require("mongoose");
 //pull the data from mongo to html
 //using handlebars to display the data
 let app = express();
-mongoose.connect(process.env,MONGODB_URI || "mongodb://localhost/mongoHeadlines");
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/mongoHeadlines');
 let PORT = process.env.PORT || 3000;
 
 //Handlebars
